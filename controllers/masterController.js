@@ -16,6 +16,16 @@ const tambahagama = async (req, res) => {
     data: resAdd,
   });
 };
+
+const tambahrole = async (req, res) => {
+  const { roleId, roleName } = req.body;
+  const resAdd = await db.roles.create({ roleId, roleName });
+  return res.status(201).json({
+    message: "register data role successfully!",
+    data: resAdd,
+  });
+};
+
 const getagamaByKodeagama = async (kodeagama) => {
   const agama = await db.agama.findOne({
     where: { kodeagama: kodeagama },
@@ -212,6 +222,7 @@ const getAllRole = (req, res) => {
 };
 module.exports = {
   tambahjeniscuti,
+  tambahrole,
   tambahagama,
   tambahjabatan,
   tambahunit,

@@ -16,7 +16,7 @@ const {
   getAllProvinsi,
   getAllKota,
   getAllKecamatan,
-  getAllKelurahan,
+  getAllKelurahan,tambahrole,
 } = require("../controllers/masterController");
 router.post("/tambahagama", tambahagama);
 router.post("/tambahjeniscuti", tambahjeniscuti);
@@ -30,6 +30,7 @@ router.get("/agama", getAllAgama);
 router.get("/unit", getAllUnit);
 router.get("/jabatan", getAllJabatan);
 router.get("/role", getAllRole);
+router.post("/tambahrole", tambahrole);
 router.get("/provinsi", getAllProvinsi);
 router.get("/kota", getAllKota);
 router.get("/kecamatan", getAllKecamatan);
