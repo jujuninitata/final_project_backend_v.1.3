@@ -1,0 +1,17 @@
+# GET http://localhost:3001/user
+
+# ###
+# GET http://localhost:3001/user
+# Content-Type: application/json
+# {
+#     "name":"Junita",
+#     "email":"junita@gmail.com",
+#     "password":"Bjb2022",
+#     "confirmpass":"Bjb2022"
+# }
+
+POST http://localhost:8000/api/v1/auth/login
+{
+    "email":"junita@gmail.com",
+    "password":"Bjb2022"
+}
