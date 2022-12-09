@@ -12,7 +12,11 @@ const jatahcutiRoutes = require('./routes/jatahcutiRoutes');
 // const userRoutes = require("./routes/userRoutes");
 dotenv.config();
 
-app.use(cors());
+var corsOptions ={
+  origin :'https://final-project-v-1-3-njrxj93pi-jujuninitata.vercel.app',
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 // app.use("/api/v1/users", userRoutes);
 app.use('/api/v1/auth', authRoutes);
