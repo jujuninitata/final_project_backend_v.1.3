@@ -1,12 +1,12 @@
 {
 
   "development": {
-    "username": "pgsql",
-    "password": "pgsql",
-    "database": "final_project_v.1.3",
-    "host": "localhost",
+    "username": "postgres",
+    "password": "e6p9czEajQTng5W97ZUk",
+    "database": "final_project_v13",
+    "host": "containers-us-west-50.railway.app",
     "dialect": "postgres",
-    "port": "5432"
+    "port": "7870"
   },
   "test": {
     "username": "postgres",
