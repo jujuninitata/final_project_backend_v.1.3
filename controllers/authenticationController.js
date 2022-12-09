@@ -1,6 +1,16 @@
 const db = require("./../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");										 
+const { encrypt, decrypt } = require("./../utils/crpyto");														  
+// using google app password authentication to send email
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "suangga2003@gmail.com",
+    pass: "pyosflpthucdycrz",
+  },
+});
 
 const getuser = async (req, res) => {
   try {
@@ -132,12 +142,12 @@ const loginWithGoogle = async (req, res, next) => {
 };
 
 const forgotPassword = async (req, res) => {
-  // const { email } = req.body;
-  // const checkData = await db.user.findOne({ where: { email } });
+  const { email } = req.body;
+  const checkData = await db.user.findOne({ where: { email } });
 
-  // if (!checkData) {
-  //   return res.status(422).json({ message: "email not found!" });
-  // }
+  if (!checkData) {
+    return res.status(422).json({ message: "email not found!" });
+  }
 
   // const token = jwt.sign(
   //   {
@@ -153,27 +163,120 @@ const forgotPassword = async (req, res) => {
   //   }
   // );
 
-  const link = `http://localhost:3000/home`;
-  // const mailOptions = {
-  //   from: "<Test>",
-  //   to: email,
-  //   subject: "Reset Password",
-  //   html: `
+  // generate a new password and hash it
+  const newPassword = Math.random().toString(36).slice(-8);
+  const salt = await bcrypt.genSalt();
+  const passwordHash = await bcrypt.hash(newPassword, salt);  
 
-  //     <h1>Reset Password</h1>
-  //     <p>Click this link to reset your password</p>
-  //     <a href="${link}">Reset Password</a>
-  //   `,
-  // };
+    // update the user's password
+  await checkData.update({
+    password: passwordHash,
+  });
+  
+  // const link = `http://localhost:3000`;
+  const mailOptions = {
+    from: "suangga2003@gmail.com",
+    to: email,
+    subject: "Reset Password",
+		 
+    // html: `
 
-  // transporter.sendMail(mailOptions, (err, info) => {
-  //   if (err) {
-  //     console.log(err);
-  //     return res.status(500).json({ message: "Internal Server Error!" });
-  //   }
-  //   return res.status(200).json({ message: "Email sent!" });
-  // });
-  res.redirect(link);
+    //   <h1>Reset Password</h1>
+    //   <p>Click this link to reset your password</p>
+    //   <a href="${link}">Reset Password</a>
+    // `,
+    html: `
+        <p>Your new password is <b>${newPassword}</b>.<br>You can use this password to log in to your account.</p>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal Server Error!" });
+    } else {
+      console.log(`Email sent: ${info.response}`);
+    }
+    return res.status(200).json({ message: "Email sent!" });
+  });
+
+  // res.redirect(link);
+  res.json({ msg: "Password reset successful" });
 };
 
-module.exports = { register, login, getuser, loginWithGoogle, forgotPassword };
+const sendVerification = async (req, res) => {
+  const { userId } = req.params;
+
+  const userDetail = await db.user.findByPk(userId);
+  const verificationCode = Math.random().toString(36).slice(2);
+
+  // update user's verificationCode for first sign-in
+  await userDetail.update({
+    verificationCode: verificationCode,
+    isVerified: false,
+  });
+
+  const hash = encrypt(verificationCode + userDetail.email);
+
+  const link = "http://" + req.get("host") + "/api/v1/auth/verify/" + hash;
+  const mailOptions = {
+    from: "suangga2003@gmail.com",
+    to: userDetail.email,
+    subject: "Email Verification",
+    html: `
+        <p>Hello,<br>You are now registered as a member.<br>Click on the link to verify your email!<br><a href="${link}">Click here to verify</a></p>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal Server Error!" });
+    } else {
+      console.log(`Email sent: ${info.response}`);
+    }
+    return res.status(200).json({ message: "Email sent!" });
+  });
+
+  console.log(
+    "Verification code for " +
+      userDetail.email +
+      " is this: " +
+      verificationCode
+  );
+
+  res.json({ msg: "Verification sent, Please check your email!" });
+};
+
+const emailVerification = async (req, res) => {
+  const { hashCode } = req.params;
+  console.log("param is: " + hashCode);
+
+  const text = decrypt(hashCode);
+  const verificationCode = text.slice(0, 10);
+  const email = text.slice(10);
+
+  const user = await db.user.findOne({ where: { email } });
+
+  // if ((req.protocol + "://" + req.get('host')) == host)
+  // {
+  // console.log("Domain is matched. Information is from Authentic email");
+  if (verificationCode == user.verificationCode) {
+    await user.update({
+      isVerified: true,
+    });
+  }
+  // }
+
+  res.json({ msg: "Verification successful, continue to Login" });
+};
+
+module.exports = {
+  register,
+  login,
+  getuser,
+  loginWithGoogle,
+  forgotPassword,
+  sendVerification,
+  emailVerification,
+};
