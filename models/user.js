@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
     /**
@@ -17,13 +17,13 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       roleId: DataTypes.INTEGER,
-	  verificationCode: DataTypes.STRING,
+      verificationCode: DataTypes.STRING,
       isVerified: DataTypes.BOOLEAN,
     },
     {
       sequelize,
-      modelName: 'user',
-    },
+      modelName: "user",
+    }
   );
   return user;
 };
