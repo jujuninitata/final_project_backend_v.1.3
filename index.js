@@ -27,6 +27,6 @@ app.use('/api/v1/trxcuti', trxcutiRoutes);
 app.use('/api/v1/jeniscuti', jenisCutiRoutes);
 app.use('/api/v1/jatahcuti', jatahcutiRoutes);
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.REACT_APP_PORT, () => {
   console.log(`Server runnning on port ` + process.env.PORT);
 });
