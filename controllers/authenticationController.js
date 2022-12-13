@@ -2,7 +2,7 @@ const db = require("./../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");										 
-const { encrypt, decrypt } = require("./../utils/crpyto");														  
+const { encrypt, decrypt } = require("../utils/crypto");														  
 // using google app password authentication to send email
 const transporter = nodemailer.createTransport({
   service: "gmail",
