@@ -16,6 +16,8 @@ var whitelist = ['http://localhost:3000', 'https://final-project-v-1-3.vercel.ap
 var corsOptions ={
   // origin :'https://final-project-v-1-3-njrxj93pi-jujuninitata.vercel.app',
   origin: function (origin, callback) {
+    console.log("request downline: " + origin);
+
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
