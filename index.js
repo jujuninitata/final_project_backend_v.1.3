@@ -26,8 +26,8 @@ var corsOptions ={
   }
 }
 
-// app.use(cors(corsOptions));
-app.use(cors())
+app.use(cors(corsOptions));
+// app.use(cors())
 app.use(express.json());
 // app.use("/api/v1/users", userRoutes);
 app.use('/api/v1/auth', authRoutes);
@@ -37,9 +37,9 @@ app.use('/api/v1/trxcuti', trxcutiRoutes);
 app.use('/api/v1/jeniscuti', jenisCutiRoutes);
 app.use('/api/v1/jatahcuti', jatahcutiRoutes);
 
-// app.listen(process.env.REACT_APP_PORT, () => {
-//   console.log(`Server runnning on port ` + process.env.REACT_APP_PORT);
-// });
-app.listen(8000, () => {
-  console.log(`Server runnning on port ` + 8000);
+app.listen(process.env.REACT_APP_PORT, () => {
+  console.log(`Server runnning on port ` + process.env.REACT_APP_PORT);
 });
+// app.listen(8000, () => {
+//   console.log(`Server runnning on port ` + 8000);
+// });
